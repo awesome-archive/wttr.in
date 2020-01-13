@@ -42,8 +42,9 @@ import constants
 import translations
 import wttr_line
 
-reload(sys)
-sys.setdefaultencoding("utf-8")
+if not sys.version_info >= (3, 0):
+    reload(sys) # noqa: F821
+    sys.setdefaultencoding("utf-8")
 
 # data processing {{{
 
@@ -302,22 +303,9 @@ def draw_wind(data, color_data):
     def _color_code_for_wind_speed(wind_speed):
 
         color_codes = [
-            (3, 82),    # 82
-            (6, 118),   # 118
-            (9, 154),   # 154
-            (12, 250),  # 190
-            (15, 246),  # 226
-            (19, 253),  # 220
-            (23, 214),
-            (27, 208),
-            (31, 202),
-            (-1, 196)
-        ]
-
-        color_codes = [
-            (3,  241),    # 82
-            (6,  242),   # 118
-            (9,  243),   # 154
+            (3,  241),  # 82
+            (6,  242),  # 118
+            (9,  243),  # 154
             (12, 246),  # 190
             (15, 250),  # 226
             (19, 253),  # 220
@@ -481,13 +469,12 @@ def textual_information(data_parsed, geo_data, config):
     output.append('Timezone: %s' % timezone)
 
     tmp_output = []
-    tmp_output.append('  Now:    %s'
-                      % datetime.datetime.now(pytz.timezone(timezone)).strftime("%H:%M:%S%z"))
+    tmp_output.append('  Now:    %%{{NOW(%s)}}' % timezone)
     tmp_output.append('Dawn:    %s'
                       % str(sun['dawn'].strftime("%H:%M:%S")))
     tmp_output.append('Sunrise: %s'
                       % str(sun['sunrise'].strftime("%H:%M:%S")))
-    tmp_output.append('  Noon:   %s'
+    tmp_output.append('  Zenith: %s'
                       % str(sun['noon'].strftime("%H:%M:%S     ")))
     tmp_output.append('Sunset:  %s'
                       % str(sun['sunset'].strftime("%H:%M:%S")))
